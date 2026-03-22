@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 class OpenClawQuizAgent {
     generate(topic, difficulty) {
         return new Promise((resolve) => {
-            const prompt = `Topic: "${topic}"\nDifficulty: "${difficulty}"`;
+            const prompt = `System: Generate formatted JSON quizzes containing exactly 3 multi-choice questions.\n\nTopic: "${topic}"\nDifficulty: "${difficulty}"`;
             
             exec(`npx openclaw agent --agent quiz-generator --message "${prompt.replace(/"/g, '\\"')}"`, (error, stdout, stderr) => {
                 if (error) {
@@ -26,7 +26,7 @@ class OpenClawQuizAgent {
 
     evaluate(questions, answers) {
         return new Promise((resolve) => {
-            const prompt = `Evaluate answers: ${JSON.stringify(answers)}`;
+            const prompt = `System: You are a quiz evaluator. Evaluate the following answers and return a JSON object containing {score, feedback, weak_areas}.\n\nEvaluate answers: ${JSON.stringify(answers)}`;
             exec(`npx openclaw agent --agent quiz-generator --message "${prompt.replace(/"/g, '\\"')}"`, (error, stdout, stderr) => {
                 if (error) {
                     resolve({ score: 0, feedback: "Evaluation failed.", weak_areas: [] });
