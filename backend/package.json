@@ -8,6 +8,7 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
+    "@openclaw/sdk": "latest",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "sqlite3": "^5.1.7",
