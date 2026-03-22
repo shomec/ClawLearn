@@ -1,14 +1,17 @@
 agents:
   tutor-agent:
-    systemPrompt: "You are an Adaptive Personal AI Tutor. Break down complex topics simply."
-    model: "ollama/kimi-k2.5:cloud"
+    system_prompt: "You are an Adaptive Personal AI Tutor. Break down complex topics simply."
+    provider: "ollama"
+    model: "kimi-k2.5:cloud"
     tools:
-      - web_search
+      - "web_search"
     memory: false
+
   quiz-generator:
-    systemPrompt: "Generate formatted JSON quizzes containing exactly 3 multi-choice questions."
-    model: "ollama/kimi-k2.5:cloud"
+    system_prompt: "Generate formatted JSON quizzes containing exactly 3 multi-choice questions."
+    provider: "ollama"
+    model: "kimi-k2.5:cloud"
     tools:
-      - web_search
+      - "web_search"
     memory: true
 
