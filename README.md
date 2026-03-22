@@ -31,13 +31,12 @@ To set up and run ClawLearn on your machine, simply follow these steps:
 
 3. **Access the Application**
    - **OpenWebUI**: Open [http://localhost:3000](http://localhost:3000) in your browser. *(Note: The OpenWebUI container can take 1-3 minutes to become fully available on the first boot as it initializes its database. If it is not working immediately, please wait a minute or run `docker compose logs -f openwebui` to check its progress.)*
-   - **API Docs**: View backend FastAPI documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ## Usage Guide
-OpenWebUI is directly hooked up to the FastAPI backend API via standard OpenAI connections to seamlessly serve agents.
+OpenWebUI is directly hooked up to the Node.js Express backend API via standard OpenAI connections to seamlessly serve agents.
 When you chat:
 1. Select one of the injected ClawLearn models in the top-left corner of OpenWebUI:
    - **`claw-tutor-agent`**: Adapts dynamically as a Personal Tutor to simplify and explain concepts.
    - **`claw-quiz-generator`**: Provide a topic in your prompt, and it generates and formats a targeted quiz.
-2. The UI natively talks to the FastAPI service (`localhost:8000/v1/chat/completions`).
+2. The UI natively talks to the Express service (`localhost:8000/v1/chat/completions`).
 3. Behind the scenes, the Express.js server invokes the **[OpenClaw](https://openclaw.ai/) Agent Daemon** bundled inside the backend container via native Node `child_process.exec` hooks to execute and orchestrate your request natively on the standard [OpenClaw](https://openclaw.ai/) interface!
