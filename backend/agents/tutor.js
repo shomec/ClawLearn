@@ -1,16 +1,20 @@
-const { OpenClawSDK } = require('@openclaw/sdk');
-const oc = new OpenClawSDK(); // Defaults to local gateway
+const { exec } = require('child_process');
 
 class OpenClawTutor {
-    async explain(topic, user_level, user_query) {
-        try {
+    explain(topic, user_level, user_query) {
+        return new Promise((resolve) => {
             const prompt = `Topic: ${topic}\nLearning Level: ${user_level}\nQuery: ${user_query}`;
-            const result = await oc.agents.get('tutor-agent').message.send({ text: prompt });
-            return result.text;
-        } catch (error) {
-            console.error('SDK Tutor Error:', error);
-            return `Gateway Error: ${error.message}`;
-        }
+            
+            // Execute locally installed openclaw natively via CLI
+            exec(`npx openclaw tell "${prompt.replace(/"/g, '\\"')}" --agent tutor-agent`, (error, stdout, stderr) => {
+                if (error) {
+                    console.error('OpenClaw exec error:', error);
+                    resolve(`Error contacting local OpenClaw Gateway: ${error.message}. Please ensure the daemon is onboarded.`);
+                    return;
+                }
+                resolve(stdout.trim());
+            });
+        });
     }
 }
 

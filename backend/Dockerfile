@@ -2,9 +2,8 @@ FROM node:22-slim
 
 WORKDIR /app
 
-# Ensure curl and openclaw are installed
-RUN apt-get update && apt-get install -y curl git && rm -rf /var/lib/apt/lists/* && \
-    npm install -g openclaw
+# Ensure curl and git are installed
+RUN apt-get update && apt-get install -y curl git && rm -rf /var/lib/apt/lists/*
 
 COPY package.json .
 RUN npm install

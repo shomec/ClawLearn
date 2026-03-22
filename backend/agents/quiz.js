@@ -1,37 +1,48 @@
-const { OpenClawSDK } = require('@openclaw/sdk');
-const oc = new OpenClawSDK(); // Defaults to local gateway
+const { exec } = require('child_process');
 
 class OpenClawQuizAgent {
-    async generate(topic, difficulty) {
-        try {
+    generate(topic, difficulty) {
+        return new Promise((resolve) => {
             const prompt = `Topic: "${topic}"\nDifficulty: "${difficulty}"`;
-            const result = await oc.agents.get('quiz-generator').message.send({ text: prompt });
             
-            const content = result.text.trim();
-            const start = content.indexOf('[');
-            const end = content.lastIndexOf(']') + 1;
-            const rawJson = start !== -1 ? content.slice(start, end) : '[]';
-            return JSON.parse(rawJson);
-        } catch (error) {
-            console.error('Quiz Generator Error:', error);
-            return [];
-        }
+            exec(`npx openclaw tell "${prompt.replace(/"/g, '\\"')}" --agent quiz-generator`, (error, stdout, stderr) => {
+                if (error) {
+                    console.error('Quiz Generator Error:', error);
+                    resolve([]);
+                    return;
+                }
+                const content = stdout.trim();
+                const start = content.indexOf('[');
+                const end = content.lastIndexOf(']') + 1;
+                const rawJson = start !== -1 ? content.slice(start, end) : '[]';
+                try {
+                    resolve(JSON.parse(rawJson));
+                } catch (e) {
+                    resolve([]);
+                }
+            });
+        });
     }
 
-    async evaluate(questions, answers) {
-        try {
+    evaluate(questions, answers) {
+        return new Promise((resolve) => {
             const prompt = `Evaluate answers: ${JSON.stringify(answers)}`;
-            const result = await oc.agents.get('quiz-generator').message.send({ text: prompt });
-            
-            const content = result.text.trim();
-            const start = content.indexOf('{');
-            const end = content.lastIndexOf('}') + 1;
-            const rawJson = start !== -1 ? content.slice(start, end) : '{}';
-            return JSON.parse(rawJson);
-        } catch (error) {
-            console.error('Quiz Eval Error:', error);
-            return { score: 0, feedback: "Evaluation failed.", weak_areas: [] };
-        }
+            exec(`npx openclaw tell "${prompt.replace(/"/g, '\\"')}" --agent quiz-generator`, (error, stdout, stderr) => {
+                if (error) {
+                    resolve({ score: 0, feedback: "Evaluation failed.", weak_areas: [] });
+                    return;
+                }
+                const content = stdout.trim();
+                const start = content.indexOf('{');
+                const end = content.lastIndexOf('}') + 1;
+                const rawJson = start !== -1 ? content.slice(start, end) : '{}';
+                try {
+                    resolve(JSON.parse(rawJson));
+                } catch (e) {
+                    resolve({ score: 0, feedback: "Evaluation failed.", weak_areas: [] });
+                }
+            });
+        });
     }
 }
 
