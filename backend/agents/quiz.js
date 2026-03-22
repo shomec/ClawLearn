@@ -5,7 +5,7 @@ class OpenClawQuizAgent {
         return new Promise((resolve) => {
             const prompt = `Topic: "${topic}"\nDifficulty: "${difficulty}"`;
             
-            exec(`npx openclaw tell "${prompt.replace(/"/g, '\\"')}" --agent quiz-generator`, (error, stdout, stderr) => {
+            exec(`npx openclaw agent --agent quiz-generator --message "${prompt.replace(/"/g, '\\"')}"`, (error, stdout, stderr) => {
                 if (error) {
                     console.error('Quiz Generator Error:', error);
                     resolve([]);
@@ -27,7 +27,7 @@ class OpenClawQuizAgent {
     evaluate(questions, answers) {
         return new Promise((resolve) => {
             const prompt = `Evaluate answers: ${JSON.stringify(answers)}`;
-            exec(`npx openclaw tell "${prompt.replace(/"/g, '\\"')}" --agent quiz-generator`, (error, stdout, stderr) => {
+            exec(`npx openclaw agent --agent quiz-generator --message "${prompt.replace(/"/g, '\\"')}"`, (error, stdout, stderr) => {
                 if (error) {
                     resolve({ score: 0, feedback: "Evaluation failed.", weak_areas: [] });
                     return;
