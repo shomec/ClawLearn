@@ -9,6 +9,9 @@ The entire app natively bridges a custom Node.js (Express) backend serving [Open
 - Backend: Node.js (Express) routing custom logic to [OpenClaw](https://openclaw.ai/) via child processes
 - Storage: SQLite3 via `sqlite3` driver
 - UI: OpenWebUI
+## Architecture
+
+![System Architecture Diagram](./architecture_diagram.svg)
 
 ## Quick Start
 To set up and run ClawLearn on your machine, simply follow these steps:
