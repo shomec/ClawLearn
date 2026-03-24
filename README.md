@@ -11,7 +11,7 @@ The entire app natively bridges a custom Node.js (Express) backend serving [Open
 - UI: OpenWebUI
 ## Architecture
 
-![System Architecture Diagram](./architecture_diagram.svg)
+![System Architecture Diagram](./architecture_diagram.png)
 
 ## Quick Start
 To set up and run ClawLearn on your machine, simply follow these steps:
@@ -38,7 +38,7 @@ When you chat:
 1. Select one of the injected ClawLearn models in the top-left corner of OpenWebUI:
    - **`claw-tutor-agent`**: Adapts dynamically as a Personal Tutor to simplify and explain concepts.
    - **`claw-quiz-generator`**: Provide a topic in your prompt, and it generates **10 multi-choice questions**. After submission, it calculates a percentage score and stores the record in SQL.
-   - **`grade-evaluator` (Background)**: Runs behind the scenes to assign grades (A-F) based on scores. It leverages OpenClaw's **native Discord skill** to send notifications and handle user feedback directly in the chat channel.
+   - **`grade-evaluator` (Background)**: Operates autonomously using **OpenClaw Heartbeat**. Every 5 minutes, it checks the SQLite database for new quiz results, assigns grades (A-F), and sends notifications via Discord. It also handles interactive feedback in the chat.
 
 2. The UI natively talks to the Express service (`localhost:8000/v1/chat/completions`).
 3. Behind the scenes, the Express.js server leverages the official **`openclaw`** local module natively via Node `child_process.exec` hooks to contact the local API Gateway and seamlessly orchestrate your request across memory-enabled agents!

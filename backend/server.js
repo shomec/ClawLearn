@@ -46,13 +46,7 @@ app.post('/v1/chat/completions', async (req, res) => {
         } else if (model === "claw-quiz-generator") {
             if (lastMessage.toLowerCase().includes("evaluate")) {
                 const result = await quizAgent.evaluate([], {}); 
-                
-                // Use OpenClaw grade-evaluator agent with built-in Discord skill
-                const evalPrompt = `Assign a grade for score ${result.score}/10 (${result.percentage}%) in topic "Sample Topic" and send the result to Discord channel ${DISCORD_CHANNEL_ID}.`;
-                exec(`npx openclaw agent --agent grade-evaluator --message "${evalPrompt.replace(/"/g, '\\"')}"`, (err, stdout) => {
-                    if (err) console.error('Discord Notification Error:', err);
-                });
-
+                // Note: grade-evaluator now runs autonomously in the background via OpenClaw Heartbeat
                 responseContent = JSON.stringify(result, null, 2);
             } else {
                 const quiz = await quizAgent.generate(lastMessage, "Beginner");
