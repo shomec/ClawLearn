@@ -3,8 +3,8 @@ const cors = require('cors');
 const db = require('./database');
 const OpenClawTutor = require('./agents/tutor');
 const OpenClawQuizAgent = require('./agents/quiz');
-const GradeEvaluatorAgent = require('./agents/evaluator');
 const { v4: uuidv4 } = require('uuid');
+const { exec } = require('child_process');
 
 const app = express();
 app.use(cors());
@@ -13,12 +13,7 @@ app.use(express.json());
 const tutorAgent = new OpenClawTutor();
 const quizAgent = new OpenClawQuizAgent();
 
-// Load Discord credentials from environment or placeholders
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN || 'YOUR_DISCORD_TOKEN';
 const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID || 'YOUR_CHANNEL_ID';
-
-const evaluatorAgent = new GradeEvaluatorAgent(DISCORD_TOKEN, DISCORD_CHANNEL_ID);
-evaluatorAgent.start();
 
 app.get('/', (req, res) => {
     res.json({ message: "Welcome to ClawLearn Node.js API" });
@@ -50,9 +45,14 @@ app.post('/v1/chat/completions', async (req, res) => {
             responseContent = await tutorAgent.explain("General Topic", "Beginner", lastMessage);
         } else if (model === "claw-quiz-generator") {
             if (lastMessage.toLowerCase().includes("evaluate")) {
-                const result = await quizAgent.evaluate([], {}); // This would normally take real questions/answers
-                // Signal evaluator agent (Simplified trigger for demo)
-                await evaluatorAgent.evaluateAndNotify(1, "Sample Topic", result.score, result.percentage);
+                const result = await quizAgent.evaluate([], {}); 
+                
+                // Use OpenClaw grade-evaluator agent with built-in Discord skill
+                const evalPrompt = `Assign a grade for score ${result.score}/10 (${result.percentage}%) in topic "Sample Topic" and send the result to Discord channel ${DISCORD_CHANNEL_ID}.`;
+                exec(`npx openclaw agent --agent grade-evaluator --message "${evalPrompt.replace(/"/g, '\\"')}"`, (err, stdout) => {
+                    if (err) console.error('Discord Notification Error:', err);
+                });
+
                 responseContent = JSON.stringify(result, null, 2);
             } else {
                 const quiz = await quizAgent.generate(lastMessage, "Beginner");

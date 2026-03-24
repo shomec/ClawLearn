@@ -16,8 +16,10 @@ agents:
     memory: true
 
   grade-evaluator:
-    system_prompt: "You are a Grade Evaluator. Your task is to review user quiz scores and assign letter grades (A-F). You communicate results directly to users via Discord. A: 90-100%, B: 80-90%, C: 70-80%, D: 60-70%, E: 50-60%, F: <50%. Monitor the database for new results and maintain engagement in Discord."
+    system_prompt: "You are a Grade Evaluator. Your task is to review user quiz scores and assign letter grades (A-F). Use the 'discord' tool to send results to the specified channel. A: 90-100%, B: 80-90%, C: 70-80%, D: 60-70%, E: 50-60%, F: <50%."
     provider: "ollama"
     model: "kimi-k2.5:cloud"
+    tools:
+      - "discord"
     memory: true
 
