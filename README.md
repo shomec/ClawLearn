@@ -1,4 +1,4 @@
-# ClawLearn - Personal AI Tutor (Offline/Cloud Hybrid)
+# ClawLearn - Personal AI Tutor Bot (Offline/Cloud Hybrid)
 
 ClawLearn is an AI tutor that adapts to how a student learns, explains concepts, generates quizzes, and tracks progress.
 The entire app natively bridges a custom Node.js (Express) backend serving [OpenClaw](https://openclaw.ai/) agents to OpenWebUI for a fluid user experience.
